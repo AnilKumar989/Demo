@@ -1,0 +1,44 @@
+{
+    "_comment" : "AMI  image with docker 7 nginx by ani",
+    "variables": {
+      "region": "",
+      "source_ami":"",
+      "instance_type":"",
+      "vpc_id": "",
+      "subnet_id": ""
+    },
+    "_comment1" : "packer build -var \"aws_secret_key=foo\" packer.json",
+    "_comment2" : "packer build -var-file packer-vars.json packer.json",
+    "builders": [{
+      "type": "amazon-ebs",
+      "region": "{{user `region`}}",
+      "source_ami": "{{user `source_ami`}}",
+      "instance_type": "{{user `instance_type`}}",
+      "ssh_username": "ubuntu",
+      "ami_name": "DevOpsClass-B26-Ansible-{{isotime | clean_resource_name}}",
+      "vpc_id": "{{user `vpc_id`}}",
+      "subnet_id": "{{user `subnet_id`}}",
+      "tags": {
+        "Name": "DevOpsClass-B26-Ansible-{{isotime | clean_resource_name}}"
+      }
+    }],
+    "provisioners": [{
+      "type": "shell",
+      "inline": [
+        "sudo useradd -m ansibleadmin",
+        "sudo mkdir -p /home/ansibleadmin/.ssh/",
+        "sudo chown -R ansibleadmin /home/ansibleadmin",
+        "sudo touch /home/ansibleadmin/.ssh/authorized-keys",
+        "sudo usermod -aG sudo ansibleadmin",
+        "echo 'ansibleadmin ALL=(ALL)NOPASSWD:ALL | sudo tee -a /etc/sudoers",
+        "echo 'RCjC4tL1zyy11Mund43DnZb1LEDYusx7+us5kOXqUP00QM28nOeqTqm8ZBOWvR4jGzrSNFiWJCF6nlEB15tatrmZUj6BtHPGEk4UN0QoT+itK9ftto6fUVnYhL' | tee /home/ubuntu/.ssh/authorized-keys"
+        ]
+    },
+    {
+        "type": "file",
+        "source": "authorized-keys",
+        "destination": "/tmp/docker.service"
+    }
+
+]
+  }
