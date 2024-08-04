@@ -1,0 +1,1 @@
+Hi replaced git remote add origin ssh url - to - git remote set-url origin ssh url in AKB 26
